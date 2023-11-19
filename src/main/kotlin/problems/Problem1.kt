@@ -2,14 +2,20 @@ package problems
 
 import java.lang.Exception
 
+// Beat 8.13% of Kotlin players
+// Beat 5.02% of Kotlin players
+
 class Problem1 {
     fun twoSum(nums: IntArray, target: Int) : IntArray {
-        val arr = sortArray(nums)
+        val indexedArray = nums.withIndex().toList()
+        val sortedArray = indexedArray.sortedBy { it.value }
+        val arr = sortedArray.map { it.value }.toIntArray()
+        val indices = sortedArray.map { it.index }.toIntArray()
 
         for(index1 in arr.indices) {
             val index2 = binarySearch(arr, target - arr[index1])
-            if(index2 != null) {
-                return intArrayOf(index1, index2.toInt())
+            if(index2 != null && index1 != index2) {
+                return intArrayOf(indices[index1], indices[index2])
             }
         }
 
@@ -19,8 +25,10 @@ class Problem1 {
     private fun binarySearch(arr: IntArray, target: Int, left : Int = 0, right: Int = arr.size - 1) : Int? {
         val pivot = (left + right) / 2
 
-
-        if(arr[pivot] == target) {
+        if(!arr.contains(target)) {
+            return null
+        }
+        else if(arr[pivot] == target) {
             return pivot
         }
         else if(arr[pivot] < target) {
@@ -30,26 +38,5 @@ class Problem1 {
             return binarySearch(arr, target, left, pivot - 1)
         }
         return null
-    }
-
-    private fun sortArray(arr: IntArray) : IntArray {
-        if (arr.size > 1) {
-            val pivot = mutableListOf(arr[(Math.random() * arr.size).toInt()], arr[(Math.random() * arr.size).toInt()], arr[(Math.random() * arr.size).toInt()]).sorted()[1]
-            val lower = mutableListOf<Int>()
-            val higher = mutableListOf<Int>()
-            for(item in arr) {
-                if (item < pivot) {
-                    lower.add(item)
-                }
-                else if (item > pivot) {
-                    higher.add(item)
-                }
-            }
-
-            return (sortArray(lower.toIntArray()) + intArrayOf(pivot) + sortArray(higher.toIntArray()))
-        }
-        else {
-            return arr
-        }
     }
 }
